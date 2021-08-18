@@ -21,9 +21,32 @@ class MetricService(
     fun addValue(metricId: String, value: Double) {
         synchronized(metricId) {
             val existingMetrics = metricRepository.getValues(metricId)
-            val updatedMetrics = (existingMetrics + value)
-            metricRepository.setValues(metricId, updatedMetrics.sorted())
+            val updatedMetrics = if (existingMetrics.isEmpty()) {
+                listOf(value)
+            } else {
+                addValueToMetricsList(existingMetrics, value)
+            }
+            metricRepository.setValues(metricId, updatedMetrics)
         }
+    }
+
+    private fun addValueToMetricsList(
+        existingMetrics: List<Double>,
+        value: Double
+    ): List<Double> {
+        val updatedMetrics = mutableListOf<Double>()
+        for (i in existingMetrics.indices) {
+            if (existingMetrics[i] >= value) {
+                updatedMetrics.add(value)
+                updatedMetrics.addAll(existingMetrics.subList(i, existingMetrics.size))
+                break
+            }
+            updatedMetrics.add(existingMetrics[i])
+        }
+        if (value > updatedMetrics.last()) {
+            updatedMetrics.add(value)
+        }
+        return updatedMetrics.toList()
     }
 
     fun getSummary(metricId: String): SummaryDto {

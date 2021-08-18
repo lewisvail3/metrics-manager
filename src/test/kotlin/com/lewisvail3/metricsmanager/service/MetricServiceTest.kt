@@ -22,7 +22,7 @@ internal class MetricServiceTest {
     }
 
     @Test
-    fun `test add metric values`() {
+    fun `test add metric value`() {
         val metricId = "metric1"
 
         whenever(metricRepository.getValues(any())).thenReturn(listOf(1.0, 2.5, 100.0))
@@ -34,6 +34,51 @@ internal class MetricServiceTest {
             verify(metricRepository).setValues(eq(metricId), capture())
             // The order of the list is important so that we can quickly determine the min, max, and median
             assertThat(firstValue).isEqualTo(listOf(1.0, 2.5, 99.9, 100.0))
+        }
+    }
+
+    @Test
+    fun `test add metric value with new min`() {
+        val metricId = "metric1"
+
+        whenever(metricRepository.getValues(any())).thenReturn(listOf(2.5, 99.9, 100.0))
+
+        metricService.addValue(metricId, 1.0)
+
+        verify(metricRepository).getValues(metricId)
+        argumentCaptor<List<Double>>().apply {
+            verify(metricRepository).setValues(eq(metricId), capture())
+            assertThat(firstValue).isEqualTo(listOf(1.0, 2.5, 99.9, 100.0))
+        }
+    }
+
+    @Test
+    fun `test add metric value with new max`() {
+        val metricId = "metric1"
+
+        whenever(metricRepository.getValues(any())).thenReturn(listOf(1.0, 2.5, 99.9))
+
+        metricService.addValue(metricId, 100.0)
+
+        verify(metricRepository).getValues(metricId)
+        argumentCaptor<List<Double>>().apply {
+            verify(metricRepository).setValues(eq(metricId), capture())
+            assertThat(firstValue).isEqualTo(listOf(1.0, 2.5, 99.9, 100.0))
+        }
+    }
+
+    @Test
+    fun `test add metric value with the same max`() {
+        val metricId = "metric1"
+
+        whenever(metricRepository.getValues(any())).thenReturn(listOf(1.0, 2.5, 99.9, 100.0))
+
+        metricService.addValue(metricId, 100.0)
+
+        verify(metricRepository).getValues(metricId)
+        argumentCaptor<List<Double>>().apply {
+            verify(metricRepository).setValues(eq(metricId), capture())
+            assertThat(firstValue).isEqualTo(listOf(1.0, 2.5, 99.9, 100.0, 100.0))
         }
     }
 
