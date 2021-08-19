@@ -1,6 +1,6 @@
 package com.lewisvail3.metricsmanager.service
 
-import com.lewisvail3.metricsmanager.dto.SummaryDto
+import com.lewisvail3.metricsmanager.dto.StatsDto
 import com.lewisvail3.metricsmanager.exceptions.NotFoundException
 import com.lewisvail3.metricsmanager.repo.MetricRepository
 import org.springframework.stereotype.Service
@@ -49,12 +49,12 @@ class MetricService(
         return updatedMetrics.toList()
     }
 
-    fun getStats(metricId: String): SummaryDto {
+    fun getStats(metricId: String): StatsDto {
         val metricValues = metricRepository.getValues(metricId)
         if (metricValues.isEmpty()) {
             throw NotFoundException("No metric values for metric $metricId")
         }
-        return SummaryDto(
+        return StatsDto(
             average = metricValues.average(),
             min = metricValues.first(),
             max = metricValues.last(),

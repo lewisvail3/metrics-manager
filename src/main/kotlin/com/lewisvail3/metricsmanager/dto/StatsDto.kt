@@ -1,11 +1,11 @@
 package com.lewisvail3.metricsmanager.dto
 
 /**
- * Represents the summary data of the values stored for a metric
+ * Represents the summary statistics of the values stored for a metric
  */
-data class SummaryDto(
+data class StatsDto(
     val average: Double,
+    val median: Double,
     val min: Double,
     val max: Double,
-    val median: Double
 )

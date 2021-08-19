@@ -1,6 +1,6 @@
 package com.lewisvail3.metricsmanager.web
 
-import com.lewisvail3.metricsmanager.dto.SummaryDto
+import com.lewisvail3.metricsmanager.dto.StatsDto
 import com.lewisvail3.metricsmanager.exceptions.InvalidValueException
 import com.lewisvail3.metricsmanager.exceptions.ServiceException
 import com.lewisvail3.metricsmanager.service.MetricService
@@ -34,7 +34,7 @@ class MetricsController(
     }
 
     @GetMapping("/{metricId}/stats")
-    fun getMetricStats(@PathVariable("metricId") metricId: String): ResponseEntity<SummaryDto> {
+    fun getMetricStats(@PathVariable("metricId") metricId: String): ResponseEntity<StatsDto> {
         val summary = metricService.getStats(metricId)
         return ResponseEntity.ok(summary)
     }
