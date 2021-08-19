@@ -23,7 +23,7 @@ class MetricsController(
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/{metricId}")
+    @PostMapping("/{metricId}/values")
     fun addMetricValue(@PathVariable("metricId") metricId: String, @RequestBody valueString: String): ResponseEntity<Void> {
         try {
             metricService.addValue(metricId, valueString.toDouble())
@@ -33,9 +33,9 @@ class MetricsController(
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping("/{metricId}/summary")
-    fun getMetricSummary(@PathVariable("metricId") metricId: String): ResponseEntity<SummaryDto> {
-        val summary = metricService.getSummary(metricId)
+    @GetMapping("/{metricId}/stats")
+    fun getMetricStats(@PathVariable("metricId") metricId: String): ResponseEntity<SummaryDto> {
+        val summary = metricService.getStats(metricId)
         return ResponseEntity.ok(summary)
     }
 

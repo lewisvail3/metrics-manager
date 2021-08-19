@@ -49,7 +49,7 @@ class MetricService(
         return updatedMetrics.toList()
     }
 
-    fun getSummary(metricId: String): SummaryDto {
+    fun getStats(metricId: String): SummaryDto {
         val metricValues = metricRepository.getValues(metricId)
         if (metricValues.isEmpty()) {
             throw NotFoundException("No metric values for metric $metricId")

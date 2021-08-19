@@ -88,7 +88,7 @@ internal class MetricServiceTest {
 
         whenever(metricRepository.getValues(metricId)).thenReturn(listOf(1.0, 2.0, 3.0, 4.0, 5.0))
 
-        val summaryDto = metricService.getSummary(metricId)
+        val summaryDto = metricService.getStats(metricId)
         assertThat(summaryDto.average).isEqualTo(3.0)
         assertThat(summaryDto.min).isEqualTo(1.0)
         assertThat(summaryDto.max).isEqualTo(5.0)
@@ -101,7 +101,7 @@ internal class MetricServiceTest {
 
         whenever(metricRepository.getValues(metricId)).thenReturn(listOf(2.5, 2.5, 3.0, 4.0, 5.0, 7.0))
 
-        val summaryDto = metricService.getSummary(metricId)
+        val summaryDto = metricService.getStats(metricId)
         assertThat(summaryDto.average).isEqualTo(4.0)
         assertThat(summaryDto.min).isEqualTo(2.5)
         assertThat(summaryDto.max).isEqualTo(7.0)

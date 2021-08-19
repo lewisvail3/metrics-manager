@@ -46,15 +46,15 @@ class MetricsControllerIT(
             .andExpect(header().string("Location", "/v1/metrics/$metricId"))
 
         // add data
-        mvc.perform(post("/v1/metrics/$metricId").content("100"))
+        mvc.perform(post("/v1/metrics/$metricId/values").content("100"))
             .andExpect(status().isNoContent)
-        mvc.perform(post("/v1/metrics/$metricId").content("103.5"))
+        mvc.perform(post("/v1/metrics/$metricId/values").content("103.5"))
             .andExpect(status().isNoContent)
-        mvc.perform(post("/v1/metrics/$metricId").content("99.5"))
+        mvc.perform(post("/v1/metrics/$metricId/values").content("99.5"))
             .andExpect(status().isNoContent)
 
         // get summary
-        mvc.perform(get("/v1/metrics/$metricId/summary").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/v1/metrics/$metricId/stats").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.average").value(101))
             .andExpect(jsonPath("$.median").value(100))
@@ -81,7 +81,7 @@ class MetricsControllerIT(
 
         mvc.perform(put("/v1/metrics/$metricId"))
 
-        mvc.perform(post("/v1/metrics/$metricId").content("not a number"))
+        mvc.perform(post("/v1/metrics/$metricId/values").content("not a number"))
             .andExpect(status().isBadRequest)
             .andExpect(content().string("Metric value must be a number"))
     }
@@ -90,16 +90,16 @@ class MetricsControllerIT(
     fun `test add value to non-existent metric`() {
         val metricId = "metric_1"
 
-        mvc.perform(post("/v1/metrics/$metricId").content("100"))
+        mvc.perform(post("/v1/metrics/$metricId/values").content("100"))
             .andExpect(status().isNotFound)
-            .andExpect(content().string("Metric $metricId does not exist")) // TODO consider making this JSON
+            .andExpect(content().string("Metric $metricId does not exist"))
     }
 
     @Test
     fun `test read summary from non-existent metric`() {
         val metricId = "metric_1"
 
-        mvc.perform(get("/v1/metrics/$metricId/summary"))
+        mvc.perform(get("/v1/metrics/$metricId/stats"))
             .andExpect(status().isNotFound)
             .andExpect(content().string("Metric $metricId does not exist"))
     }
@@ -110,7 +110,7 @@ class MetricsControllerIT(
 
         mvc.perform(put("/v1/metrics/$metricId"))
 
-        mvc.perform(get("/v1/metrics/$metricId/summary"))
+        mvc.perform(get("/v1/metrics/$metricId/stats"))
             .andExpect(status().isNotFound)
             .andExpect(content().string("No metric values for metric $metricId"))
     }
