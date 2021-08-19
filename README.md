@@ -74,3 +74,23 @@ The following command will build a runnable JAR which can be used to launch the 
 
 The above command will also run all tests before building the JAR but that step can be omitted by
 passing the `-DskipTests` argument.
+
+The service can also be built as a docker image with the following command:
+
+```shell
+./docker-build.sh
+```
+
+The new docker image can then be run locally with the following command:
+
+```shell
+docker run -p 8080:8080 metrics-manager
+```
+
+Or the following commands can be used to push the image to a central image repository (
+where `{IMAGE_REPO}` is the URL for the image repository):
+
+```shell
+docker tag metrics-manager {IMAGE_REPO}/metrics-manager:latest
+docker push {IMAGE_REPO}/metrics-manager:latest
+```
